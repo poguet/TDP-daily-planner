@@ -1,7 +1,49 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
-$(function () {
+var time = dayjs().format('H:mm:ss');
+$('currentDay').text(`Current Time : ${time}`);
+
+
+$(function save  () {
+    let timeHours = [9,10,11,12,13,14,15,16,17]
+    let currentHour = dayjs().format('H')
+
+    for (let i = 0; i < timeHours.length; i++) {
+        let currenttimeblock = $(`#hour-${timeHours[i]}`)
+        console.log(currentHour)
+
+        if (timeHours[i] > currentHour) {
+            currenttimeblock.attr('class', 'row time-block future')
+        } else if (timeHours[i] < currentHour) {
+            currenttimeblock.attr('class', 'row time-block past')
+        } else if (timeHours[i] === currentHour) {
+            currenttimeblock.attr('class', 'row time-block present')
+        }
+
+        let currnetBtn = currenttimeblock.find('button')
+
+        currnetBtn.click(function(event) {
+            event.preventDefault();
+            console.log(event.target)
+            let currenttimeblocktext = currenttimeblock.find('textarea')[0].value
+            console.log(currenttimeblocktext)
+            let currentIndex = currenttimeblock.attr('id').split('-')[1]
+            console.log(currentIndex)
+
+            let userData = {
+                time : currentIndex,
+                message : currenttimeblocktext
+            }
+            localStorage.setItem('scheduele', JSON.stringify(userData))
+
+            let dailyItem = localStorage.getItem("schedule")
+            let saveditem = JSON.parse(dailyItem)
+
+        });
+    }
+
+    
     // TODO: Add a listener for click events on the save button. This code should
     // use the id in the containing time-block as a key to save the user input in
     // local storage. HINT: What does `this` reference in the click listener
